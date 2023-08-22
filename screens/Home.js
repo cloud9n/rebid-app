@@ -7,8 +7,7 @@ import {
     StatusBar,
     TouchableOpacity,
     Image,
-    FlatList,
-
+    FlatList
 } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { theme } from '../config/theme';
@@ -16,20 +15,22 @@ import { demoProducts } from '../assets/demo-products';
 import { categories } from "../assets/categories";
 import { CommaSepNum } from '../utilities/comma-sep-num';
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Sell } from './Sell';
+import { History } from './History';
+import { Profile } from './Profile';
+import { MyBids } from './MyBids';
 import { Ionicons } from "@expo/vector-icons";
-import { MyBids } from "./MyBids";
-import { Sell } from "./Sell";
-import { Profile } from "./Profile";
-import { History } from "./History";
+import { Logo } from "../assets/logo";
 
 const Tab = createBottomTabNavigator();
+
 function MyHome() {
 
     return (
         <SafeAreaView style={styles.wrapper}>
             <View style={styles.container}>
                 <View style={styles.header}>
-                    <Text style={styles.brandName}>Rebid</Text>
+                    <Logo />
                 </View>
 
                 {/* categories block */}
@@ -107,40 +108,41 @@ function MyHome() {
     )
 }
 
-//bottom navigateion start here
 export function Home() {
-    <Tab.Navigator
-        screenOptions={({ route }) => ({
-            tabBarIcon: ({ focused, color, size }) => {
-                let iconName;
+    return (
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
 
-                if (route.name === 'Home') {
-                    iconName = focused ? 'home' : 'home-outline';
-                } else if (route.name === 'Sell') {
-                    iconName = focused ? 'md-file-tray-stacked' : 'ios-file-tray-stacked-outline';
-                } else if (route.name === 'Bids') {
-                    iconName = focused ? 'md-file-tray-stacked' : 'ios-file-tray-stacked-outline';
-                } else if (route.name === 'History') {
-                    iconName = focused ? 'md-file-tray-stacked' : 'ios-file-tray-stacked-outline';
-                }
-                else if (route.name === 'Profile') {
-                    iconName = focused ? 'person-circle' : 'person-circle-outline';
-                }
+                    if (route.name === 'Home') {
+                        iconName = focused ? 'home' : 'home-outline';
+                    } else if (route.name === 'Sell') {
+                        iconName = focused ? 'ios-cart-sharp' : 'ios-cart-outline';
+                    } else if (route.name === 'Bids') {
+                        iconName = focused ? 'hammer' : 'hammer-outline';
+                    } else if (route.name === 'History') {
+                        iconName = focused ? 'md-file-tray-stacked' : 'ios-file-tray-stacked-outline';
+                    } else if (route.name === 'Profile') {
+                        iconName = focused ? 'person-circle' : 'person-circle-outline';
+                    }
 
-                return <Ionicons name={iconName} size={size} color={color} />;
-            },
-            tabBarActiveTintColor: 'black',
-            tabBarInactiveTintColor: 'gray',
-        })}
-    >
-        <Tab.Screen name='Home' component={MyHome} options={{ headerShown: false }} />
-        <Tab.Screen name='MyBid' component={MyBids} options={{ headerShown: false }} />
-        <Tab.Screen name='Sell' component={Sell} options={{ headerShown: false }} />
-        <Tab.Screen name='History' component={History} options={{ headerShown: false }} />
-        <Tab.Screen name='Profile' component={Profile} options={{ headerShown: false }} />
+                    return <Ionicons name={iconName} size={size} color={color} />;
+                },
+                tabBarActiveTintColor: theme.colors.dullRed1,
+                tabBarInactiveTintColor: 'gray',
+            })}
+        >
+            <Tab.Screen name='Home' component={MyHome} options={{ headerShown: false }} />
+            <Tab.Screen name='Sell' component={Sell} options={{ headerShown: false }} />
+            <Tab.Screen name='Bids' component={MyBids} options={{ headerShown: false }} />
+            <Tab.Screen name='History' component={History} options={{ headerShown: false }} />
+            <Tab.Screen name='Profile' component={Profile} options={{ headerShown: false }} />
 
-    </Tab.Navigator>
+        </Tab.Navigator>
+    )
 }
+
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,

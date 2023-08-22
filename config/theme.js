@@ -4,7 +4,8 @@ const theme = {
         red: '#B31312',
         dullRed0: '#EEE2DE',
         dullRed1: '#EA906C',
-        white: '#fcfffe'
+        white: '#fcfffe',
+        grey: 'grey',
     }
 }
 

@@ -1,114 +1,166 @@
-import { View, SafeAreaView, StyleSheet, TouchableOpacity, StatusBar, Platform, Text } from 'react-native';
+/*
+PARTS WITH CHANGES
+
+1. All TextInput ===>> changed all onChange to onChangeText
+2. {({ handleChange, handleBlur, handleSubmit, values, touched }) ===>> added errors
+3. <Text style={styles.errorText}>error</Text> ===>> some logic
+*/
+
+import {
+    View,
+    Text,
+    SafeAreaView,
+    StyleSheet,
+    TouchableOpacity,
+    StatusBar,
+    Platform,
+    Alert
+} from 'react-native';
 import { TextInput, Button } from 'react-native-paper';
-import { theme } from '../config/theme';
 import { Formik } from 'formik';
-import { Signin } from './Signin';
-import *as yup from 'yup';
+import { theme } from '../config/theme';
+import * as yup from 'yup';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { faGavel } from '@fortawesome/free-solid-svg-icons';
+import { Logo } from '../assets/logo';
+import { Home } from './Home';
+
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { authentication } from '../config/firebase.config';
+
 
 const schema = yup.object().shape({
     fName: yup.string().min(3).required(),
     lName: yup.string().min(3).required(),
     email: yup.string().min(8).max(60).required(),
-    password: yup.string().min(8).max(32).required().oneOf,
-    passwordConfirm: yup.string().oneOf([yup.ref('password'), null], 'Password must match')
-
+    password: yup.string().min(8).max(32).required(),
+    passwordConfirmation: yup.string()
+        .oneOf([yup.ref('password'), null], 'password must match')
 });
 
 export function CreateAccount({ navigation }) {
+    //async function to check and uthenticate user
+    const handleCreateAccount = async (email, pass) => {
+        await createUserWithEmailAndPassword(authentication, email, pass)
+            .them(() => Alert.alert(
+                'Status Report',
+                'Your account was created successfully',
+                [{
+                    text: 'Proceed',
+                    onPress: () => navigation.navigate('my-home')
+                }]
+            ))
+            .catch((e) => Alert.alert(
+                'Status Report',
+                'Error',
+                [{
+                    text: 'Dismiss',
+                    onPress: () => console.log(e)
+                }]
+            ))
+    }
+
     return (
         <SafeAreaView style={styles.wrapper}>
             <View style={styles.container}>
-                <Text style={styles.brandName}>Rebid</Text>
-                {/* form here */}
-                <View style={styles.form}>
+                {/* <View style={styles.logo}>
 
+                    <FontAwesomeIcon icon={faGavel} size={40} color={theme.colors.dullRed1} beatFade />
+
+                </View>
+                <Text style={styles.brandName}>Rebid</Text> */}
+                <Logo />
+
+                <View style={styles.form}>
                     <Formik
                         initialValues={{ fName: '', lName: '', email: '', password: '', passwordConfirmation: '' }}
-                        onSubmit={values => console.log(values)}
+                        onSubmit={values => console.log(values.email)
+                            //     {
+                            //     handleCreateAccount(values.email, values.password)
+                            // }
+                        }
                         validationSchema={schema}
                     >
-                        {({ handleChange, handleBlur, handleSubmit, values, touched }) => (
+                        {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
                             <>
-
                                 <View>
                                     <TextInput
-                                        onChangeText={handleChange('fName')}
                                         mode='outlined'
-                                        onChange={handleChange('fName')}
-                                        onBlur={handleBlur('fname')}
                                         value={values.fName}
-                                        placeholder='First Name'
-
-                                    />
-                                    <Text style={styles.erroText}>error</Text>
-
+                                        onChangeText={handleChange('fName')}
+                                        onBlur={handleBlur('fName')}
+                                        placeholder='first name' />
+                                    {errors.fName && touched.fName
+                                        ? <Text style={styles.errorText}>{errors.fName}</Text>
+                                        : null}
                                 </View>
-
                                 <View>
                                     <TextInput
-                                        onChangeText={handleChange('lName')}
                                         mode='outlined'
-                                        // onChange={handleChange('lName')}
-                                        onBlur={handleBlur('lName')}
                                         value={values.lName}
-                                        placeholder='Last Name'
-
-                                    />
-                                    <Text style={styles.erroText}>error</Text>
+                                        onChangeText={handleChange('lName')}
+                                        onBlur={handleBlur('lName')}
+                                        placeholder='last name' />
+                                    {errors.lName && touched.lName
+                                        ? <Text style={styles.errorText}>{errors.lName}</Text>
+                                        : null}
                                 </View>
                                 <View>
                                     <TextInput
-                                        onChangeText={handleChange('email')}
                                         mode='outlined'
-                                        keyboardType='email'
-                                        // onChange={handleChange('email')}
-                                        onBlur={handleBlur('email')}
+                                        keyboardType='email-address'
                                         value={values.email}
-                                        placeholder='Email'
-
-                                    />
-                                    <Text style={styles.erroText}>error</Text>
+                                        onChangeText={handleChange('email')}
+                                        onBlur={handleBlur('email')}
+                                        placeholder='email address' />
+                                    {errors.email && touched.email
+                                        ? <Text style={styles.errorText}>{errors.email}</Text>
+                                        : null}
                                 </View>
                                 <View>
                                     <TextInput
-                                        onChangeText={handleChange('password')}
                                         mode='outlined'
-                                        keyboardType='password'
+                                        keyboardType='default'
                                         secureTextEntry={true}
-                                        // onChange={handleChange('password')}
-                                        onBlur={handleBlur('password')}
                                         value={values.password}
-                                        placeholder='Password'
-
-                                    />
-                                    <Text style={styles.erroText}>error</Text>
+                                        onChangeText={handleChange('password')}
+                                        onBlur={handleBlur('password')}
+                                        placeholder='create password' />
+                                    {errors.password && touched.password
+                                        ? <Text style={styles.errorText}>{errors.password}</Text>
+                                        : null}
                                 </View>
                                 <View>
                                     <TextInput
-                                        onChangeText={handleChange('passwordConfirm')}
                                         mode='outlined'
-                                        keyboardType='passwordConfirm'
+                                        keyboardType='default'
                                         secureTextEntry={true}
-                                        // onChange={handleChange('passwordConfirm')}
-                                        onBlur={handleBlur('passwordConfirm')}
-                                        value={values.passwordConfirm}
-                                        placeholder='Confirm Password'
-
-                                    />
-                                    <Text style={styles.erroText}>error</Text>
-
+                                        value={values.passwordConfirmation}
+                                        onChangeText={handleChange('passwordConfirmation')}
+                                        onBlur={handleBlur('passwordConfirmation')}
+                                        placeholder='confirm password' />
                                 </View>
-                                <Button mode='outlined' buttonColor={theme.colors.navy} textColor={theme.colors.dullRed0} onPress={handleSubmit}>Create Account</Button>
+
+                                <Button
+                                    mode='contained'
+                                    buttonColor={theme.colors.navy}
+                                    textColor={theme.colors.dullRed0}
+                                    style={{ paddingVertical: 8 }}
+                                    onPress={() => {
+                                        handleSubmit();
+                                        handleCreateAccount(values.email, values.password)
+                                    }
+                                    }
+                                >Create Account</Button>
                             </>
                         )}
                     </Formik>
                 </View>
+
                 <View style={styles.existingUser}>
                     <Text style={styles.existingUserText}>Already have a Rebid account?</Text>
-                    <TouchableOpacity>
-                        <Text style={[styles.existingUserText, { color: theme.colors.dullRed1 }]}
-                            onPress={() => navigation.navigate('Signin')}
-                        >Go to Sign in</Text>
+                    <TouchableOpacity onPress={() => navigation.navigate('signin')}>
+                        <Text style={[styles.existingUserText, { color: theme.colors.dullRed1 }]}>Go to Sign in</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -119,7 +171,7 @@ export function CreateAccount({ navigation }) {
 const styles = StyleSheet.create({
     wrapper: {
         flex: 1,
-        marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
+        // marginTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
     },
     container: {
         flex: 1,
@@ -132,23 +184,19 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: theme.colors.dullRed1
     },
-    existingUser: {
-        flexDirection: 'row',
-        gap: 4,
-
-    },
-    existingUserText: {
-
-    },
     form: {
         flexDirection: 'column',
         gap: 8,
-
     },
-    erroText: {
-
+    errorText: {
+        fontSize: 12,
+        color: theme.colors.red,
     },
-
-});
-
-
+    existingUser: {
+        flexDirection: 'row',
+        gap: 4,
+    },
+    existingUserText: {
+        fontSize: 18
+    }
+})
