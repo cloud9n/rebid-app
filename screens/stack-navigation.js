@@ -1,25 +1,22 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Starter } from "./Starter";
 import { Home } from "./Home";
-import ProductInfo from "./Products";
 import { CreateAccount } from "./CreateAccount";
-import { StatusBar } from "react-native";
 import { Signin } from "./Signin";
+import ProductInfo from "./Products";
 
-const Stack = createBottomTabNavigator();
+const Stack = createNativeStackNavigator();
 
 export function StackNavigation() {
     return (
         <Stack.Navigator
-            initialRouteName="create-account"
-            screenOptions={{ headerShown: false }}
-        >
+            initialRouteName="my-home"
+            screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="my-home" component={Home} />
             <Stack.Screen name="starter" component={Starter} />
             <Stack.Screen name="create-account" component={CreateAccount} />
-            <Stack.Screen name="my-home" component={Home} />
-            <Stack.Screen name="products" component={ProductInfo} />
             <Stack.Screen name="signin" component={Signin} />
-        </Stack.Navigator >
+            <Stack.Screen name="products" component={ProductInfo} />
+        </Stack.Navigator>
     )
 }

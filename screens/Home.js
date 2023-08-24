@@ -21,6 +21,7 @@ import { Profile } from './Profile';
 import { MyBids } from './MyBids';
 import { Ionicons } from "@expo/vector-icons";
 import { Logo } from "../assets/logo";
+import ProductInfo from "./Products";
 
 const Tab = createBottomTabNavigator();
 
@@ -123,6 +124,8 @@ export function Home() {
                         iconName = focused ? 'hammer' : 'hammer-outline';
                     } else if (route.name === 'History') {
                         iconName = focused ? 'md-file-tray-stacked' : 'ios-file-tray-stacked-outline';
+                    } else if (route.name === 'ProductsInfo') {
+                        iconName = focused ? 'person-circle' : 'person-circle-outline';
                     } else if (route.name === 'Profile') {
                         iconName = focused ? 'person-circle' : 'person-circle-outline';
                     }
@@ -137,6 +140,7 @@ export function Home() {
             <Tab.Screen name='Sell' component={Sell} options={{ headerShown: false }} />
             <Tab.Screen name='Bids' component={MyBids} options={{ headerShown: false }} />
             <Tab.Screen name='History' component={History} options={{ headerShown: false }} />
+            <Tab.Screen name='Products' component={ProductInfo} options={{ headerShown: false }} />
             <Tab.Screen name='Profile' component={Profile} options={{ headerShown: false }} />
 
         </Tab.Navigator>

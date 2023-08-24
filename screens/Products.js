@@ -1,13 +1,13 @@
-import { Text, View, StyleSheet, Image, FlatList, TouchableOpacity, Platform, StatusBar, ImageBackground } from 'react-native';
+import { Text, View, StyleSheet, Image, FlatList, TouchableOpacity, Platform, StatusBar, TextInput, ImageBackground } from 'react-native';
 import { demoProducts } from '../assets/demo-products';
 import { faCartShopping, faGavel, faShoppingCart, faHeart } from "@fortawesome/free-solid-svg-icons";
 import { theme } from '../config/theme';
-import { Button, TextInput } from 'react-native-paper';
+import { Button, } from 'react-native-paper';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { CommaSepNum } from '../utilities/comma-sep-num';
 import { Logo } from '../assets/logo';
-
+import { LinearGradient } from 'expo-linear-gradient';
 
 const ProductInfo = () => {
     return (
@@ -15,22 +15,47 @@ const ProductInfo = () => {
 
             <View style={styles.container}>
 
-                <ImageBackground style={styles.backImage} source={require('../assets/bid.jpg')} >
-                    <Logo />
-                    <View style={styles.header}>
+                {/* <ImageBackground style={styles.backImage} source={require('../assets/bid.jpg')} > */}
 
-                        <TextInput style={styles.searchArea} backgroundColor={theme.colors.dullRed0} placeholder='Search Bids' />
-                        <TouchableOpacity>
-                            <Button style={styles.Button} onPress={() => alert('Search pressed')}> Go</Button>
-                        </TouchableOpacity>
-                    </View>
-                </ImageBackground>
+                <View>
+
+
+                    <LinearGradient style={{ borderRadius: 30 }} colors={[theme.colors.dullRed1, theme.colors.dullRed0]}>
+                        <Logo />
+                        <View style={styles.header}>
+
+
+                            <TextInput style={styles.searchArea} backgroundColor={theme.colors.dullRed0} placeholder='Search Bids' />
+                            <TouchableOpacity style={styles.Button} o>
+                                <Text nPress={() => alert('Search pressed')}>
+                                    {/* <FontAwesomeIcon icon={faMagnifyingGlass} /> */}
+                                    <FontAwesomeIcon icon={faHeart} color={theme.colors.navy}
+                                        style={{
+                                            position: 'absolute',
+                                            zIndex: 1,
+                                            right: 1,
+                                            margin: 10,
+                                        }} /></Text>
+                            </TouchableOpacity>
+                        </View>
+                    </LinearGradient>
+
+                </View>
+
+
+                {/* </ImageBackground> */}
 
                 <FlatList
                     data={demoProducts}
                     renderItem={({ item }) => <TouchableOpacity style={styles.product}>
                         <View style={styles.productBody}>
-                            <FontAwesomeIcon icon={faHeart} color={theme.colors.dullRed1} style={{ position: 'absolute', zIndex: 1, right: 1, margin: 10, }} />
+                            <FontAwesomeIcon icon={faHeart} color={theme.colors.dullRed1}
+                                style={{
+                                    position: 'absolute',
+                                    zIndex: 1,
+                                    right: 1,
+                                    margin: 10,
+                                }} />
                             <Image source={{ uri: item.imageUr }} style={styles.image} />
                             <View style={styles.description}>
                                 <Text style={styles.category}>Category</Text>
@@ -41,6 +66,7 @@ const ProductInfo = () => {
                                     <Text style={styles.price}>{CommaSepNum(item.currentBid)}</Text>
                                 </View>
                                 <TouchableOpacity>
+
                                     <View style={styles.bidButton}><FontAwesomeIcon style={styles.gavel} icon={faGavel} color={theme.colors.dullRed0} size={20} /><Text style={{ color: theme.colors.dullRed0, }}>Bid</Text></View>
                                 </TouchableOpacity>
                                 {/* <Button><FontAwesomeIcon style={styles.like} icon={faGavel} size={15} />Bid</Button> */}
@@ -75,16 +101,21 @@ const styles = StyleSheet.create({
         marginTop: Platform.OS == 'android' ? StatusBar.currentHeight : 0,
 
     },
+    gradient: {
+        color: theme.colors.navy & theme.colors.dullRed1,
+        height: 200,
+    },
     header: {
         flexDirection: 'row',
-        width: '90%',
-        // backgroundColor: theme.colors.navy,
-        height: 200,
-        borderRadius: 20,
+        width: '100%',
+        backgroundColor: theme.colors.navy,
+        height: 70,
+        borderRadius: 50,
         alignContent: 'center',
         alignItems: 'center',
-        paddingLeft: 10,
-        paddingRight: 10,
+        paddingLeft: 20,
+        paddingRight: 20,
+        marginTop: 10,
 
     },
     backImage: {
@@ -93,20 +124,23 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     searchArea: {
-        width: '80%',
+        width: '90%',
         position: 'relative',
         height: 40,
-        marginRight: 10,
-        borderRadius: 5,
+        marginRight: 5,
+        borderRadius: 50,
+
 
 
     },
     Button: {
         backgroundColor: theme.colors.dullRed1,
         borderRadius: 5,
-        width: '100%',
+        width: 40,
+        height: 40,
         position: 'relative',
-        color: theme.colors.dullRed0,
+        color: theme.colors.dullRed1,
+        padding: 13,
     },
     description: {
         backgroundColor: theme.colors.navy,
