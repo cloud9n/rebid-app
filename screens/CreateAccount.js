@@ -24,8 +24,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faGavel } from '@fortawesome/free-solid-svg-icons';
 import { Logo } from '../assets/logo';
 import { Home } from './Home';
+import { db } from '../config/firebase.config';
+import { setDoc, doc } from 'firebase/firestore';
 
-import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { createUserWithEmailAndPassword, onAuthStateChanged } from 'firebase/auth';
 import { authentication } from '../config/firebase.config';
 
 
@@ -39,25 +41,39 @@ const schema = yup.object().shape({
 });
 
 export function CreateAccount({ navigation }) {
+    const regTime = new Date().getTime();
     //async function to check and uthenticate user
-    const handleCreateAccount = async (email, pass) => {
-        await createUserWithEmailAndPassword(authentication, email, pass)
-            .them(() => Alert.alert(
-                'Status Report',
-                'Your account was created successfully',
-                [{
-                    text: 'Proceed',
-                    onPress: () => navigation.navigate('my-home')
-                }]
-            ))
-            .catch((e) => Alert.alert(
-                'Status Report',
-                'Error',
-                [{
-                    text: 'Dismiss',
-                    onPress: () => console.log(e)
-                }]
-            ))
+    const handleCreateAccount = async (email, pass, fName, lName) => {
+        await createUserWithEmailAndPassword(authentication, email, pass, fName, lName)
+            .then(() => {
+                Alert.alert(
+                    'Status Report',
+                    'Your account was created successfully',
+                    [{
+                        text: 'Proceed',
+                        onPress: () => navigation.navigate('my-home')
+                    }]
+                );
+                //checks for userid
+                onAuthStateChanged(authentication, user => {
+                    const uid = user.uid;
+                    console.log(uid);
+                    setDoc(doc(db, 'users', uid), {
+                        firstName: fName,
+                        lastName: lName,
+                        email: email,
+                        createdAt: 'regTime',
+                    });
+                })
+                    .catch((e) => Alert.alert(
+                        'Status Report',
+                        'Error',
+                        [{
+                            text: 'Dismiss',
+                            onPress: () => console.log(e)
+                        }]
+                    ));
+            })
     }
 
     return (
@@ -148,7 +164,7 @@ export function CreateAccount({ navigation }) {
                                     style={{ paddingVertical: 8 }}
                                     onPress={() => {
                                         handleSubmit();
-                                        handleCreateAccount(values.email, values.password)
+                                        handleCreateAccount(values.email, values.password, values.fName, values.lName)
                                     }
                                     }
                                 >Create Account</Button>

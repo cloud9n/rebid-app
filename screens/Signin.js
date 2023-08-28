@@ -35,25 +35,17 @@ const schema = yup.object().shape({
     passwordConfirmation: yup.string()
         .oneOf([yup.ref('password'), null], 'password must match')
 });
-
 export function Signin({ navigation }) {
-    //async function to check and uthenticate user
+
     const handleSignin = async (email, pass) => {
         await signInWithEmailAndPassword(authentication, email, pass)
-            .them(() => Alert.alert(
-                'Status Report',
-                'Your account was created successfully',
-                [{
-                    text: 'Proceed',
-                    onPress: () => navigation.navigate('my-home')
-                }]
-            ))
+            .then(() => navigation.navigate('my-home'))
             .catch((e) => Alert.alert(
                 'Status Report',
-                'Error',
+                'An error has occured!',
                 [{
                     text: 'Dismiss',
-                    onPress: () => console.log(e)
+                    onPress: console.error(e)
                 }]
             ))
     }
@@ -62,19 +54,17 @@ export function Signin({ navigation }) {
         <SafeAreaView style={styles.wrapper}>
             <View style={styles.container}>
                 <Logo />
+
                 <View style={styles.form}>
                     <Formik
-                        initialValues={{ email: '', password: '', }}
-                        onSubmit={() => {
-                            handleSubmit();
+                        initialValues={{ email: '', password: '' }}
+                        onSubmit={values => {
                             handleSignin(values.email, values.password)
-                        }
-                        }
+                        }}
                         validationSchema={schema}
                     >
                         {({ handleChange, handleBlur, handleSubmit, values, touched, errors }) => (
                             <>
-
                                 <View>
                                     <TextInput
                                         mode='outlined'
@@ -106,21 +96,16 @@ export function Signin({ navigation }) {
                                     buttonColor={theme.colors.navy}
                                     textColor={theme.colors.dullRed0}
                                     style={{ paddingVertical: 8 }}
-                                    onPress={() => {
-                                        handleSubmit();
-                                        handleSignin(values.email, values.password)
-                                    }
-                                    }
-                                >Sign In</Button>
+                                    onPress={handleSubmit}>Sign in</Button>
                             </>
                         )}
                     </Formik>
                 </View>
 
                 <View style={styles.existingUser}>
-                    <Text style={styles.existingUserText}>Dont have Rebid account?</Text>
+                    <Text style={styles.existingUserText}>Don't have a Rebid account?</Text>
                     <TouchableOpacity onPress={() => navigation.navigate('create-account')}>
-                        <Text style={[styles.existingUserText, { color: theme.colors.dullRed1 }]}>Go to Sign Up</Text>
+                        <Text style={[styles.existingUserText, { color: theme.colors.dullRed1 }]}>Go to Sign up</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -158,13 +143,5 @@ const styles = StyleSheet.create({
     },
     existingUserText: {
         fontSize: 18
-    },
-    logo: {
-        backgroundColor: theme.colors.navy,
-        borderRadius: 360,
-        width: 150,
-        height: 150,
-        alignSelf: 'center',
-
     }
 })
