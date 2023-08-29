@@ -5,7 +5,7 @@ PARTS WITH CHANGES
 2. {({ handleChange, handleBlur, handleSubmit, values, touched }) ===>> added errors
 3. <Text style={styles.errorText}>error</Text> ===>> some logic
 */
-
+import { useContext } from 'react';
 import {
     View,
     Text,
